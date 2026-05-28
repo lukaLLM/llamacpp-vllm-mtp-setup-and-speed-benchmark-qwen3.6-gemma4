@@ -1,0 +1,67 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  .root{background:#0a0a0c;color:#f0ede8;font-family:'Space Mono',monospace;padding:2rem 1.5rem 2.5rem;max-width:680px;margin:0 auto;}
+  .header{margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid rgba(255,255,255,0.1);}
+  .eyebrow{font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:#555;margin-bottom:0.4rem;}
+  .rig-name{font-family:'Syne',sans-serif;font-size:2.1rem;font-weight:800;line-height:1.05;color:#f0ede8;}
+  .rig-name span{color:#22c97c;}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.07);border-radius:10px;overflow:hidden;}
+  .card{background:#111116;padding:1.25rem 1.3rem;}
+  .card-wide{grid-column:span 2;}
+  .card-label{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#555;margin-bottom:0.5rem;}
+  .card-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#f0ede8;margin-bottom:1rem;line-height:1.3;}
+  .row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+  .row:last-child{border-bottom:none;}
+  .rk{font-size:10px;color:#555;letter-spacing:0.06em;}
+  .rv{font-size:10px;color:#aaa;text-align:right;}
+  .rv-hi{font-size:10px;color:#f0ede8;font-weight:700;text-align:right;}
+</style>
+
+<div class="root">
+  <div class="header">
+    <p class="eyebrow">Hardware · AI test rig</p>
+    <h1 class="rig-name">Luke's <span>Bench</span></h1>
+  </div>
+
+  <div class="cards">
+
+    <div class="card card-wide">
+      <p class="card-label">CPU</p>
+      <p class="card-title">AMD Ryzen 9 9950X</p>
+      <div class="row"><span class="rk">Architecture</span><span class="rv-hi">Zen 5 — AM5</span></div>
+      <div class="row"><span class="rk">Cores / Threads</span><span class="rv-hi">16C / 32T</span></div>
+      <div class="row"><span class="rk">Max Boost</span><span class="rv-hi">5.76 GHz</span></div>
+      <div class="row"><span class="rk">L1 Cache</span><span class="rv">768 KiB d + 512 KiB i</span></div>
+      <div class="row"><span class="rk">L2 Cache</span><span class="rv">16 MiB</span></div>
+      <div class="row"><span class="rk">L3 Cache</span><span class="rv-hi">64 MiB</span></div>
+    </div>
+
+    <div class="card card-wide">
+      <p class="card-label">GPU</p>
+      <p class="card-title">NVIDIA RTX PRO 6000 Blackwell</p>
+      <div class="row"><span class="rk">VRAM</span><span class="rv-hi">96 GB</span></div>
+      <div class="row"><span class="rk">Driver</span><span class="rv">590.48.01</span></div>
+      <div class="row"><span class="rk">CUDA</span><span class="rv-hi">13.1</span></div>
+      <div class="row"><span class="rk">TDP</span><span class="rv">600 W</span></div>
+    </div>
+
+    <div class="card">
+      <p class="card-label">RAM</p>
+      <p class="card-title" style="font-size:1.4rem;">92 GB</p>
+      <div class="row"><span class="rk">Total</span><span class="rv-hi">91 GiB</span></div>
+      <div class="row"><span class="rk">Available</span><span class="rv">73 GiB</span></div>
+      <div class="row"><span class="rk">Swap</span><span class="rv">8 GiB</span></div>
+    </div>
+
+    <div class="card">
+      <p class="card-label">Platform</p>
+      <p class="card-title" style="font-size:1rem;">Linux · Ubuntu</p>
+      <div class="row"><span class="rk">Kernel arch</span><span class="rv-hi">x86_64</span></div>
+      <div class="row"><span class="rk">Virtualisation</span><span class="rv">AMD-V</span></div>
+      <div class="row"><span class="rk">Display</span><span class="rv">Xorg / GNOME</span></div>
+    </div>
+
+  </div>
+</div>

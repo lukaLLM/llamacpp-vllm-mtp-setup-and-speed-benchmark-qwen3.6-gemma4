@@ -1,0 +1,74 @@
+name: llama_cpp_qwen36_no_mtp
+
+networks:
+  server:
+    driver: bridge
+
+services:
+  llama_cpp_qwen36_mtp:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda13
+    container_name: LlamaCpp_Qwen36_27B_NoMTP_Server
+
+    networks:
+      - server
+
+    ports:
+      - "8001:8080"
+
+    gpus: all
+
+    ulimits:
+      memlock: -1
+      stack: 67108864
+      nofile:
+        soft: 1048576
+        hard: 1048576
+
+    environment:
+      HF_HOME: /root/.cache/huggingface
+      HF_HUB_CACHE: /root/.cache/huggingface/hub
+      LLAMA_CACHE: /root/.cache/huggingface/llama.cpp
+      # HF_TOKEN: ${HF_TOKEN}
+
+    volumes:
+      - ${HOME}/.cache/huggingface:/root/.cache/huggingface
+
+    command:
+      # Model: Load directly from local cache (no Hugging Face re-download at startup)
+      - -m
+      - /root/.cache/huggingface/hub/models--unsloth--Qwen3.6-27B-MTP-GGUF/snapshots/5cb35eb3dcbf52dbce5f87dbc64df6aaffadcace/Qwen3.6-27B-Q8_0.gguf
+
+      # Server: Listen address and port
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8080"
+      # Alias: Model name used in API requests
+      - --alias
+      - qwen3.6-27b-mtp
+
+      # -ngl: Number of layers to offload to GPU (-1 = all layers)
+      - -ngl
+      - "-1"
+      # -c: Context size in tokens (max input + output length)
+      - -c
+      - "3000"
+      # -fa: Flash Attention for faster inference and lower VRAM
+      - -fa
+      - "on"
+      # -np: Number of parallel slots (concurrent request handling)
+      - -np
+      - "1"
+
+      # MTP Speculative Decoding: Predict multiple tokens at once for faster generation
+      # --spec-type: Use model's multi-token prediction heads
+      # --spec-draft-n-max: Max draft tokens to predict speculatively (2-4 recommended)
+      # - --spec-type
+      # - draft-mtp
+      # - --spec-draft-n-max
+      # - "3"
+
+      # --metrics: Enable Prometheus metrics endpoint at /metrics
+      - --metrics
+
+    restart: unless-stopped

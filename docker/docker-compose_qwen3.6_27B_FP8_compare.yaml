@@ -1,0 +1,119 @@
+name: vllm_qwen36_27b_fp8_compare
+
+networks:
+  server:
+    driver: bridge
+
+services:
+  qwen36_default:
+    image: vllm/vllm-openai:nightly
+    container_name: VLLM_Qwen36_27B_FP8_Default
+    networks:
+      - server
+
+    ports:
+      - "${QWEN_HOST_PORT:-8000}:8000"
+
+    ipc: host
+    shm_size: 16g
+    gpus: all
+
+    environment:
+      HF_HOME: /root/.cache/huggingface
+      HF_HUB_CACHE: /root/.cache/huggingface/hub
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+      HF_TOKEN: ${HF_TOKEN:-}
+      HUGGING_FACE_HUB_TOKEN: ${HF_TOKEN:-}
+      CUDA_VISIBLE_DEVICES: "0"
+
+    volumes:
+      - ${HOME}/.cache/huggingface:/root/.cache/huggingface
+
+    command:
+      - /root/.cache/huggingface/hub/models--Qwen--Qwen3.6-27B-FP8/snapshots/e89b16ebf1988b3d6befa7de50abc2d76f26eb09
+
+      - --served-model-name
+      - qwen36-default
+
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+
+      - --max-model-len
+      - "3000"
+
+      - --tensor-parallel-size
+      - "1"
+
+      - --gpu-memory-utilization
+      - "0.45"
+
+      - --max-num-seqs
+      - "1"
+
+      - --reasoning-parser
+      - qwen3
+
+      - --no-enable-prefix-caching
+
+    restart: unless-stopped
+
+  qwen36_mtp:
+    image: vllm/vllm-openai:nightly
+    container_name: VLLM_Qwen36_27B_FP8_MTP
+    networks:
+      - server
+
+    ports:
+      - "${QWEN_HOST_PORT:-8000}:8000"
+
+    ipc: host
+    shm_size: 16g
+    gpus: all
+
+    environment:
+      HF_HOME: /root/.cache/huggingface
+      HF_HUB_CACHE: /root/.cache/huggingface/hub
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+      HF_TOKEN: ${HF_TOKEN:-}
+      HUGGING_FACE_HUB_TOKEN: ${HF_TOKEN:-}
+      CUDA_VISIBLE_DEVICES: "0"
+
+    volumes:
+      - ${HOME}/.cache/huggingface:/root/.cache/huggingface
+
+    command:
+      - /root/.cache/huggingface/hub/models--Qwen--Qwen3.6-27B-FP8/snapshots/e89b16ebf1988b3d6befa7de50abc2d76f26eb09
+
+      - --served-model-name
+      - qwen36-mtp
+
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+
+      - --max-model-len
+      - "3000"
+
+      - --tensor-parallel-size
+      - "1"
+
+      - --gpu-memory-utilization
+      - "0.45"
+
+      - --max-num-seqs
+      - "1"
+
+      - --reasoning-parser
+      - qwen3
+
+      - --no-enable-prefix-caching
+
+      - --speculative-config
+      - '{"method":"mtp","num_speculative_tokens":4}'
+
+    restart: unless-stopped

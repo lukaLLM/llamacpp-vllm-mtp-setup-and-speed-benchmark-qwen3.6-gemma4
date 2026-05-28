@@ -1,0 +1,126 @@
+name: vllm_gemma4_31b_fp8_compare
+
+networks:
+  server:
+    driver: bridge
+
+services:
+  gemma4_default:
+    image: vllm/vllm-openai:nightly
+    container_name: VLLM_Gemma4_31B_FP8_Default
+    networks:
+      - server
+
+    ports:
+      - "${GEMMA_HOST_PORT:-8000}:8000"
+
+    ipc: host
+    shm_size: 16g
+    gpus: all
+
+    environment:
+      HF_HOME: /root/.cache/huggingface
+      HF_HUB_CACHE: /root/.cache/huggingface/hub
+      HF_TOKEN: ${HF_TOKEN:-}
+      HUGGING_FACE_HUB_TOKEN: ${HF_TOKEN:-}
+      CUDA_VISIBLE_DEVICES: "0"
+
+    volumes:
+      - ${HOME}/.cache/huggingface:/root/.cache/huggingface
+
+    command:
+      # Target model, no MTP / no draft model
+      - --model
+      - RedHatAI/gemma-4-31B-it-FP8-block
+
+      - --served-model-name
+      - gemma4-default
+
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      # context size in tokens (max input + output length)
+      - --max-model-len
+      - "3000"
+
+      # Single GPU. Increase only if you have enough VRAM.
+      - --tensor-parallel-size
+      - "1"
+
+      - --gpu-memory-utilization
+      - "0.45"
+
+      - --max-num-seqs
+      - "1"
+
+      # Text-only benchmark, avoid vision memory allocation
+      - --limit-mm-per-prompt
+      - '{"image":0,"audio":0}'
+
+      # More consistent benchmark numbers
+      - --no-enable-prefix-caching
+
+    restart: unless-stopped
+
+
+  gemma4_mtp:
+    image: vllm/vllm-openai:nightly
+    container_name: VLLM_Gemma4_31B_FP8_MTP
+    networks:
+      - server
+
+    ports:
+      - "${GEMMA_HOST_PORT:-8000}:8000"
+
+    ipc: host
+    shm_size: 16g
+    gpus: all
+
+    environment:
+      HF_HOME: /root/.cache/huggingface
+      HF_HUB_CACHE: /root/.cache/huggingface/hub
+      HF_TOKEN: ${HF_TOKEN:-}
+      HUGGING_FACE_HUB_TOKEN: ${HF_TOKEN:-}
+      CUDA_VISIBLE_DEVICES: "0"
+
+    volumes:
+      - ${HOME}/.cache/huggingface:/root/.cache/huggingface
+
+    command:
+      # Target model
+      - --model
+      - RedHatAI/gemma-4-31B-it-FP8-block
+
+      - --served-model-name
+      - gemma4-mtp
+
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      # context size in tokens (max input + output length)
+      - --max-model-len
+      - "3000"
+
+      - --tensor-parallel-size
+      - "1"
+
+      - --gpu-memory-utilization
+      - "0.45"
+
+      - --max-num-seqs
+      - "1"
+
+      # Text-only benchmark, avoid vision memory allocation
+      - --limit-mm-per-prompt
+      - '{"image":0,"audio":0}'
+
+      # More consistent benchmark numbers
+      - --no-enable-prefix-caching
+
+      # This links the Gemma assistant draft model to the target model.
+      - --speculative-config
+      - '{"method":"mtp","model":"google/gemma-4-31B-it-assistant","num_speculative_tokens":2}'
+
+    restart: unless-stopped

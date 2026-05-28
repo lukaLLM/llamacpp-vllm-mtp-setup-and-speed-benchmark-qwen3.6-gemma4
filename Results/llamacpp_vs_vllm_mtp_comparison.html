@@ -1,0 +1,184 @@
+
+<h2 class="sr-only">llama.cpp vs vLLM inference speed comparison — MTP vs No MTP for Qwen3.6-27B and Gemma-4-31B</h2>
+
+<style>
+.hero { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin: 1.5rem 0 1rem; }
+.hero-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; }
+.hero-card.winner { border: 2px solid #7F77DD; }
+.badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: var(--border-radius-md); margin-bottom: 6px; }
+.tps-big { font-size: 28px; font-weight: 500; line-height: 1.1; }
+.tps-unit { font-size: 13px; color: var(--color-text-secondary); }
+.speedup-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 999px; margin-top: 6px; }
+.model-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 2px; margin-top: 8px; }
+.model-name { font-size: 13px; font-weight: 500; }
+.section-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-secondary); margin: 1.5rem 0 0.5rem; }
+.legend-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 10px; font-size: 12px; color: var(--color-text-secondary); }
+.legend-sq { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 4px; vertical-align: middle; }
+.divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1.25rem 0; }
+.finding { display: flex; gap: 10px; padding: 10px 12px; border-radius: var(--border-radius-md); background: var(--color-background-secondary); margin-bottom: 8px; font-size: 13px; line-height: 1.5; }
+.finding-num { font-weight: 500; font-size: 15px; color: var(--color-text-secondary); min-width: 20px; }
+</style>
+
+<p class="section-title">peak speed — best mtp config</p>
+
+<div class="hero">
+  <div class="hero-card">
+    <div class="badge" style="background:#E1F5EE;color:#0F6E56;">llama.cpp</div>
+    <div class="model-label">Qwen3.6-27B-Q8_0.gguf</div>
+    <div class="model-name">MTP n_max=3</div>
+    <div class="tps-big" style="color:#1D9E75;margin-top:8px;">121.4</div>
+    <div class="tps-unit">tok / sec</div>
+    <div class="speedup-pill" style="background:#E1F5EE;color:#0F6E56;"><i class="ti ti-bolt" style="font-size:13px" aria-hidden="true"></i> 2.78× vs baseline</div>
+    <div style="font-size:11px;color:var(--color-text-secondary);margin-top:8px;">Baseline: 43.7 t/s</div>
+  </div>
+  <div class="hero-card">
+    <div class="badge" style="background:#E6F1FB;color:#185FA5;">vLLM</div>
+    <div class="model-label">Qwen3.6-27B-FP8</div>
+    <div class="model-name">MTP n_max=5</div>
+    <div class="tps-big" style="color:#378ADD;margin-top:8px;">127.3</div>
+    <div class="tps-unit">tok / sec</div>
+    <div class="speedup-pill" style="background:#E6F1FB;color:#185FA5;"><i class="ti ti-bolt" style="font-size:13px" aria-hidden="true"></i> 2.59× vs baseline</div>
+    <div style="font-size:11px;color:var(--color-text-secondary);margin-top:8px;">Baseline: 49.2 t/s</div>
+  </div>
+  <div class="hero-card winner">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+      <div class="badge" style="background:#E6F1FB;color:#185FA5;">vLLM</div>
+      <div class="badge" style="background:#EEEDFE;color:#534AB7;">fastest</div>
+    </div>
+    <div class="model-label">RedHatAI/gemma-4-31B-it-FP8</div>
+    <div class="model-name">MTP n_max=5</div>
+    <div class="tps-big" style="color:#7F77DD;margin-top:8px;">132.5</div>
+    <div class="tps-unit">tok / sec</div>
+    <div class="speedup-pill" style="background:#EEEDFE;color:#534AB7;"><i class="ti ti-bolt" style="font-size:13px" aria-hidden="true"></i> 3.34× vs baseline</div>
+    <div style="font-size:11px;color:var(--color-text-secondary);margin-top:8px;">Baseline: 39.7 t/s</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<p class="section-title">baseline vs best mtp — tok/s comparison</p>
+<div class="legend-row">
+  <span><span class="legend-sq" style="background:#b8dcc8;"></span>No MTP (baseline)</span>
+  <span><span class="legend-sq" style="background:#1D9E75;"></span>llama.cpp MTP best</span>
+  <span><span class="legend-sq" style="background:#378ADD;"></span>vLLM Qwen MTP best</span>
+  <span><span class="legend-sq" style="background:#7F77DD;"></span>vLLM Gemma MTP best</span>
+</div>
+<div style="position:relative;width:100%;height:280px;">
+  <canvas id="mainChart" role="img" aria-label="Grouped bar chart comparing inference speeds: no-MTP baseline 39-49 tok/s, MTP best 121-132 tok/s across all three models.">Baseline (no MTP): llama.cpp 43.7, vLLM Qwen 49.2, vLLM Gemma 39.7 tok/s. Best MTP: llama.cpp 121.4, vLLM Qwen 127.3, vLLM Gemma 132.5 tok/s.</canvas>
+</div>
+
+<hr class="divider">
+
+<p class="section-title">llama.cpp mtp n_max sweep — tok/s by config</p>
+<div class="legend-row">
+  <span><span class="legend-sq" style="background:#9FE1CB;border:0.5px solid #5DCAA5"></span>No MTP</span>
+  <span><span class="legend-sq" style="background:#1D9E75;"></span>With MTP</span>
+</div>
+<div style="position:relative;width:100%;height:200px;">
+  <canvas id="sweepChart" role="img" aria-label="Line chart showing MTP speedup per n_max value in llama.cpp. n_max=2: 95.9, n_max=3: 121.4, n_max=4: 113.9, n_max=5: 116.9 tok/s.">MTP by n_max: 2→95.9, 3→121.4, 4→113.9, 5→116.9 tok/s. No MTP stays flat at ~43-48 tok/s.</canvas>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+const tickColor = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.45)';
+
+new Chart(document.getElementById('mainChart'), {
+  type: 'bar',
+  data: {
+    labels: ['llama.cpp\nQwen Q8_0', 'vLLM\nQwen FP8', 'vLLM\nGemma FP8'],
+    datasets: [
+      {
+        label: 'No MTP (baseline)',
+        data: [43.7, 49.2, 39.7],
+        backgroundColor: isDark ? 'rgba(255,255,255,0.15)' : '#b8dcc8',
+        borderColor: isDark ? 'rgba(255,255,255,0.3)' : '#5DCAA5',
+        borderWidth: 1,
+        borderDash: [4,2],
+        borderRadius: 4,
+      },
+      {
+        label: 'Best MTP',
+        data: [121.4, 127.3, 132.5],
+        backgroundColor: ['#1D9E75','#378ADD','#7F77DD'],
+        borderColor: ['#0F6E56','#185FA5','#534AB7'],
+        borderWidth: 1,
+        borderRadius: 4,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)} tok/s`
+        }
+      }
+    },
+    scales: {
+      x: { ticks: { color: tickColor, font: { size: 12 } }, grid: { display: false } },
+      y: {
+        beginAtZero: true,
+        max: 155,
+        ticks: { color: tickColor, font: { size: 11 }, callback: v => v + ' t/s' },
+        grid: { color: gridColor }
+      }
+    }
+  }
+});
+
+new Chart(document.getElementById('sweepChart'), {
+  type: 'line',
+  data: {
+    labels: ['n_max=2', 'n_max=3', 'n_max=4', 'n_max=5'],
+    datasets: [
+      {
+        label: 'No MTP',
+        data: [43.7, 47.1, 43.6, 43.3],
+        borderColor: isDark ? 'rgba(255,255,255,0.3)' : '#5DCAA5',
+        backgroundColor: 'transparent',
+        borderDash: [5,3],
+        pointStyle: 'rect',
+        pointRadius: 4,
+        tension: 0.3,
+      },
+      {
+        label: 'With MTP',
+        data: [95.9, 121.4, 113.9, 116.9],
+        borderColor: '#1D9E75',
+        backgroundColor: 'rgba(29,158,117,0.1)',
+        pointStyle: 'circle',
+        pointRadius: 5,
+        fill: true,
+        tension: 0.3,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)} tok/s`
+        }
+      }
+    },
+    scales: {
+      x: { ticks: { color: tickColor, font: { size: 12 } }, grid: { display: false } },
+      y: {
+        beginAtZero: false,
+        min: 30,
+        max: 140,
+        ticks: { color: tickColor, font: { size: 11 }, callback: v => v + ' t/s' },
+        grid: { color: gridColor }
+      }
+    }
+  }
+});
+</script>
