@@ -271,8 +271,7 @@ Saved run 'gemma4-mtp-3' to /home/luke/Documents/Code/MTP/visualization/leaderbo
 - `--prompt`: prompt text used for benchmark
 
 ## 7) Latest leaderboard snapshot
-[<img width="1440" height="1728" alt="image" src="https://github.com/user-attachments/assets/d3c43c6b-3ad9-496b-81bf-0c9fbc3a3169" />
-](https://www.reddit.com/r/LocalLLaMA/comments/1trf0r0/i_tested_mtp_on_vllm_and_llamacpp_for_gemma_4/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
+<img width="1440" height="862" alt="image" src="https://github.com/user-attachments/assets/7d1cf411-2c6a-4b33-a8d7-b88822d398d2" />
 
 ## 8) Stop servers
 
