@@ -271,6 +271,7 @@ Saved run 'gemma4-mtp-3' to /home/luke/Documents/Code/MTP/visualization/leaderbo
 - `--prompt`: prompt text used for benchmark
 
 ## 7) Latest leaderboard snapshot
+<img width="881" height="966" alt="image" src="https://github.com/user-attachments/assets/0ff200ac-2d2d-4897-8021-37994d808bf3" />
 
 ```text
 | rank | run                        | engine    | model        | quant | MTP | n_spec | avg tok/s | median tok/s |
