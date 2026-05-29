@@ -4,6 +4,8 @@ Local benchmark setup for comparing `NO MTP` vs `MTP` token throughput using:
 - `llama.cpp` + `Qwen3.6-27B-MTP-GGUF`
 - `vLLM` + `Gemma 4 31B FP8`
 
+> **Note:** `llama.cpp` does **not** support Gemma 4 as of the date this repo was created. Gemma 4 benchmarks use `vLLM` only.
+
 ## YouTube Videos
 
 LOCAL AI / MTP BENCHMARK SERIES:
@@ -13,6 +15,7 @@ LOCAL AI / MTP BENCHMARK SERIES:
 
 - compares `NO MTP` vs `MTP` throughput on local OpenAI-compatible endpoints
 - supports `llama.cpp` Qwen3.6 MTP GGUF flows and `vLLM` Gemma 4 FP8 flows
+- includes a bonus `vLLM` Qwen3.6 27B FP8 NO MTP vs MTP comparison (vLLM was also used for Qwen, not just Gemma 4)
 - includes side-by-side and single-endpoint benchmark scripts
 - stores per-request and per-run benchmark history in CSV:
   - `visualization/comparison_runs.csv`
@@ -20,13 +23,18 @@ LOCAL AI / MTP BENCHMARK SERIES:
 
 ## Requirements
 
-- Linux
-- NVIDIA GPU with Docker/CUDA support
-- Docker Engine with `docker compose`
-- NVIDIA Container Toolkit
-- Python `3.12+`
-- `uv`
-- optional Hugging Face token in repo-root `.env` as `HF_TOKEN=...`
+Tested on: `Linux 6.14.0-29-generic #29~24.04.1-Ubuntu x86_64 GNU/Linux` — [Ubuntu 24.04 Desktop](https://ubuntu.com/download/desktop)
+
+| Requirement | Notes | Install guide |
+|---|---|---|
+| Linux (Ubuntu 24.04) | tested OS | [Ubuntu Desktop](https://ubuntu.com/download/desktop) |
+| NVIDIA GPU + driver | CUDA-capable GPU with a supported driver | [NVIDIA Driver Install Guide (Ubuntu)](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/index.html#ubuntu) |
+| Docker Engine with `docker compose` | used to run llama.cpp and vLLM containers | [Docker Engine Install (Ubuntu)](https://docs.docker.com/engine/install/ubuntu/) |
+| NVIDIA Container Toolkit | allows Docker containers to access the GPU | [NVIDIA Container Toolkit Install Guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) |
+| Python `3.12+` | for benchmark scripts | — |
+| `uv` | Python package/env manager | — |
+| VSCode (or similar editor) | optional, for editing configs and scripts | [VSCode Install (Linux)](https://code.visualstudio.com/docs/setup/linux) |
+| Hugging Face token | optional, needed for gated models | set as `HF_TOKEN=...` in repo-root `.env` |
 
 ## Quick Setup
 
@@ -141,6 +149,34 @@ Run one service at a time on the same port:
 docker compose --env-file .env -f docker/docker-compose_mtp_gemma4_31B.yaml up -d gemma4_default
 ```
 
+### Qwen3.6 27B FP8 (vLLM) — NO MTP vs MTP Comparison
+
+A bonus compose file runs `Qwen/Qwen3.6-27B-FP8` through `vLLM`, allowing a direct NO MTP vs MTP comparison for Qwen in FP8 precision via vLLM.
+
+Two services are defined — run **one at a time** on the same port:
+
+**NO MTP** on `:8000`:
+```bash
+docker compose --env-file .env -f docker/docker-compose_qwen3.6_27B_FP8_compare.yaml up -d qwen36_default
+```
+
+**MTP** (4 speculative tokens) on `:8000`:
+```bash
+docker compose --env-file .env -f docker/docker-compose_qwen3.6_27B_FP8_compare.yaml up -d qwen36_mtp
+```
+
+Key settings used in this compose file:
+- Image: `vllm/vllm-openai:nightly`
+- Model: `Qwen/Qwen3.6-27B-FP8`
+- `--max-model-len 3000`, `--gpu-memory-utilization 0.45`, `--max-num-seqs 1`
+- `--reasoning-parser qwen3`, `--no-enable-prefix-caching`
+- MTP service adds: `--speculative-config '{"method":"mtp","num_speculative_tokens":4}'`
+
+Stop when done:
+```bash
+docker compose -f docker/docker-compose_qwen3.6_27B_FP8_compare.yaml down
+```
+
 ### Health checks
 
 ```bash
@@ -235,9 +271,9 @@ Saved run 'gemma4-mtp-3' to /home/luke/Documents/Code/MTP/visualization/leaderbo
 ## 7) Latest leaderboard snapshot
 
 ```text
-┏━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━━┳━━━━━━┓
+┏━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━━┳━[...]
 ┃ rank ┃ run           ┃ avg tok/s ┃ median ┃ tokens ┃ seconds ┃ runs ┃
-┡━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━━╇━━━━━━┩
+┡━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━━╇━[...]
 │    1 │ gemma4-mtp-5  │    132.52 │ 133.10 │   4750 │   35.85 │   10 │
 │    2 │ gemma4-mtp-4  │    129.82 │ 134.05 │   4750 │   37.07 │   10 │
 │    3 │ qwen36-mtp-5  │    127.31 │ 126.68 │  13210 │  103.77 │   10 │
@@ -246,7 +282,7 @@ Saved run 'gemma4-mtp-3' to /home/luke/Documents/Code/MTP/visualization/leaderbo
 │    6 │ gemma4-mtp-2  │     94.00 │  96.42 │   4730 │   50.70 │   10 │
 │    7 │ qwen36-no-mtp │     49.23 │  49.25 │  14530 │  295.12 │   10 │
 │    8 │ gemma4-no-mtp │     39.69 │  39.54 │   5120 │  129.05 │   10 │
-└──────┴───────────────┴───────────┴────────┴────────┴─────────┴──────┘
+└──────┴───────────────┴───────────┴────────┴────────┴─────────┴─[...]
 ```
 
 ## 8) Stop servers
