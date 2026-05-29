@@ -34,6 +34,10 @@ Tested on: `Linux 6.14.0-29-generic #29~24.04.1-Ubuntu x86_64 GNU/Linux` — [Ub
 | VSCode (or similar editor) | optional, for editing configs and scripts | [VSCode Install (Linux)](https://code.visualstudio.com/docs/setup/linux) |
 | Hugging Face token | optional, needed for gated models | set as `HF_TOKEN=...` in repo-root `.env` |
 
+## Hardware
+
+AMD Ryzen 9 9950X | NVIDIA RTX PRO 6000 Blackwell | 
+96GB VRAM | 92GB RAM 
 ## Quick Setup
 
 1. Setup Python environment:
