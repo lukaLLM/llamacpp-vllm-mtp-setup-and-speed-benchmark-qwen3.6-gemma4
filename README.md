@@ -8,6 +8,7 @@ Local benchmark setup for comparing `NO MTP` vs `MTP` token throughput using:
 
 ## YouTube Videos
 -  Over 3x Faster AI. MTP Explained, Deployed & Benchmarked on Gemma 4 & Qwen 3.6 - https://www.youtube.com/watch?v=vN3At9GuSnc
+<img width="1080" height="481" alt="image" src="https://github.com/user-attachments/assets/cf4116e9-83b9-4eef-90eb-4c72e74b002b" />
 
 ## What This Repo Does
 
