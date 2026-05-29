@@ -269,18 +269,25 @@ Saved run 'gemma4-mtp-3' to /home/luke/Documents/Code/MTP/visualization/leaderbo
 ## 7) Latest leaderboard snapshot
 
 ```text
-┏━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━━┳━━━━━━┓
-┃ rank ┃ run           ┃ avg tok/s ┃ median ┃ tokens ┃ seconds ┃ runs ┃
-┡━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━━╇━━━━━━┩
-│    1 │ gemma4-mtp-5  │    132.52 │ 133.10 │   4750 │   35.85 │   10 │
-│    2 │ gemma4-mtp-4  │    129.82 │ 134.05 │   4750 │   37.07 │   10 │
-│    3 │ qwen36-mtp-5  │    127.31 │ 126.68 │  13210 │  103.77 │   10 │
-│    4 │ gemma4-mtp-3  │    124.26 │ 124.25 │   4740 │   38.14 │   10 │
-│    5 │ qwen36-mtp-4  │    121.96 │ 122.01 │  12840 │  105.28 │   10 │
-│    6 │ gemma4-mtp-2  │     94.00 │  96.42 │   4730 │   50.70 │   10 │
-│    7 │ qwen36-no-mtp │     49.23 │  49.25 │  14530 │  295.12 │   10 │
-│    8 │ gemma4-no-mtp │     39.69 │  39.54 │   5120 │  129.05 │   10 │
-└──────┴───────────────┴───────────┴────────┴────────┴─────────┴──────┘
+| rank | run                        | engine    | model        | quant | MTP | n_spec | avg tok/s | median tok/s |
+|------|----------------------------|-----------|--------------|-------|-----|--------|-----------|--------------|
+|  1   | gemma4-mtp-5               | vLLM      | Gemma 4 31B  | FP8   | ✅  |   5    |   132.52  |    133.10    |
+|  2   | gemma4-mtp-4               | vLLM      | Gemma 4 31B  | FP8   | ✅  |   4    |   129.82  |    134.05    |
+|  3   | qwen36-mtp-5               | vLLM      | Qwen 3.6 27B | FP8   | ✅  |   5    |   127.31  |    126.68    |
+|  4   | gemma4-mtp-3               | vLLM      | Gemma 4 31B  | FP8   | ✅  |   3    |   124.26  |    124.25    |
+|  5   | qwen36-mtp-4               | vLLM      | Qwen 3.6 27B | FP8   | ✅  |   4    |   121.96  |    122.01    |
+|  6   | Qwen3.6_27B_LLAMA_n_max_3  | llama.cpp | Qwen 3.6 27B | Q8    | ✅  |   3    |   117.70  |    121.29    |
+|  7   | Qwen3.6_27B_LLAMA_n_max_5  | llama.cpp | Qwen 3.6 27B | Q8    | ✅  |   5    |   116.74  |    117.03    |
+|  8   | Qwen3.6_27B_LLAMA_n_max_4  | llama.cpp | Qwen 3.6 27B | Q8    | ✅  |   4    |   114.21  |    114.80    |
+|  9   | Qwen3.6_27B_LLAMA_n_max_2  | llama.cpp | Qwen 3.6 27B | Q8    | ✅  |   2    |    95.75  |     96.20    |
+| 10   | gemma4-mtp-2               | vLLM      | Gemma 4 31B  | FP8   | ✅  |   2    |    94.00  |     96.42    |
+| 11   | qwen36-no-mtp              | vLLM      | Qwen 3.6 27B | FP8   | ❌  |   -    |    49.23  |     49.25    |
+| 12   | Qwen3.6_27B_LLAMA_n_max_3  | llama.cpp | Qwen 3.6 27B | Q8    | ❌  |   -    |    46.88  |     48.49    |
+| 13   | Qwen3.6_27B_LLAMA_n_max_4  | llama.cpp | Qwen 3.6 27B | Q8    | ❌  |   -    |    43.55  |     43.79    |
+| 14   | Qwen3.6_27B_LLAMA_n_max_2  | llama.cpp | Qwen 3.6 27B | Q8    | ❌  |   -    |    43.69  |     43.65    |
+| 15   | Qwen3.6_27B_LLAMA_n_max_5  | llama.cpp | Qwen 3.6 27B | Q8    | ❌  |   -    |    43.10  |     43.26    |
+| 16   | gemma4-no-mtp              | vLLM      | Gemma 4 31B  | FP8   | ❌  |   -    |    39.69  |     39.54    |
+
 ```
 
 ## 8) Stop servers
