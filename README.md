@@ -7,9 +7,7 @@ Local benchmark setup for comparing `NO MTP` vs `MTP` token throughput using:
 > **Note:** `llama.cpp` does **not** support Gemma 4 as of the date this repo was created. Gemma 4 benchmarks use `vLLM` only.
 
 ## YouTube Videos
-
-LOCAL AI / MTP BENCHMARK SERIES:
-- Episode 1: Over 3x Faster AI. MTP Explained, Deployed & Benchmarked on Gemma 4 & Qwen 3.6 - https://www.youtube.com/watch?v=vN3At9GuSnc
+-  Over 3x Faster AI. MTP Explained, Deployed & Benchmarked on Gemma 4 & Qwen 3.6 - https://www.youtube.com/watch?v=vN3At9GuSnc
 
 ## What This Repo Does
 
